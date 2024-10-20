@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Assignment_2
@@ -62,8 +62,31 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return new List<int>(); // Placeholder
+                // Create a boolean array to track the presence of numbers
+                bool[] isCurrent = new bool[nums.Length + 1]; // +1 to handle 1-based index
+            
+            // Mark the numbers that are present in the input array
+            foreach (int num in nums)
+            {
+                if (num >= 1 && num <= nums.Length)
+                {
+                    isCurrent[num] = true;
+                }
+            }
+            
+            // Create a list to store missing numbers
+            List<int> missingNumbers = new List<int>();
+            
+            // Find the numbers that are missing
+            for (int i = 1; i <= nums.Length; i++)
+            {
+                if (!isCurrent[i])
+                {
+                    missingNumbers.Add(i);
+                }
+            }
+
+                return missingNumbers;
             }
             catch (Exception)
             {
@@ -76,8 +99,34 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return new int[0]; // Placeholder
+                // Two pointers approach
+                int left = 0;                   // Pointer for even numbers
+                int right = nums.Length - 1;    // Pointer for odd numbers
+
+                while (left < right)
+                {
+                    // If the left number is even, just move the left pointer
+                    if (nums[left] % 2 == 0)
+                    {
+                        left++;
+                    }
+                    // If the right number is odd, just move the right pointer
+                    else if (nums[right] % 2 == 1)
+                    {
+                        right--;
+                    }
+                    // Otherwise, swap the left odd number with the right even number
+                    else
+                    {
+                        int temp = nums[left];
+                        nums[left] = nums[right];
+                        nums[right] = temp;
+                        left++;
+                        right--;
+                    }
+                }
+
+                return nums;
             }
             catch (Exception)
             {
@@ -90,8 +139,28 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return new int[0]; // Placeholder
+                // Create a dictionary to store number and its index
+                Dictionary<int, int> numDict = new Dictionary<int, int>();
+
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    int complement = target - nums[i]; // Calculate the complement
+
+                    // Check if the complement exists in the dictionary
+                    if (numDict.ContainsKey(complement))
+                    {
+                        return new int[] { numDict[complement], i }; // Return indices
+                    }
+
+                    // Add the current number and its index to the dictionary
+                    if (!numDict.ContainsKey(nums[i])) // Avoid overwriting
+                    {
+                        numDict[nums[i]] = i;
+                    }
+                }
+
+                // Return an empty array if no solution is found (though per problem statement there should be one)
+                return new int[0];
             }
             catch (Exception)
             {
@@ -104,8 +173,47 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return 0; // Placeholder
+                // Initialize the variables to track the largest and smallest numbers
+                int[] max = { int.MinValue, int.MinValue, int.MinValue }; // For the largest three
+                int[] min = { int.MaxValue, int.MaxValue };             // For the smallest two
+
+                // Traverse the array to find the required values
+                foreach (int num in nums)
+                {
+                    // Update the largest three
+                    if (num > max[0])
+                    {
+                        max[2] = max[1];
+                        max[1] = max[0];
+                        max[0] = num;
+                    }
+                    else if (num > max[1])
+                    {
+                        max[2] = max[1];
+                        max[1] = num;
+                    }
+                    else if (num > max[2])
+                    {
+                        max[2] = num;
+                    }
+
+                    // Update the smallest two
+                    if (num < min[0])
+                    {
+                        min[1] = min[0];
+                        min[0] = num;
+                    }
+                    else if (num < min[1])
+                    {
+                        min[1] = num;
+                    }
+                }
+
+                // Calculate the maximum product of three numbers
+                int product1 = max[0] * max[1] * max[2]; // Product of the three largest numbers
+                int product2 = min[0] * min[1] * max[0];  // Product of the two smallest and the largest
+
+                return Math.Max(product1, product2); // Return the maximum of the two products
             }
             catch (Exception)
             {
@@ -118,8 +226,19 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return "101010"; // Placeholder
+                if (decimalNumber == 0) return "0"; // Handle the edge case for 0
+
+                string res = string.Empty;
+
+                // Use bit manipulation to convert to binary
+                while (decimalNumber > 0)
+                {
+                    int remainder = decimalNumber % 2; // Get the remainder (0 or 1)
+                    res = remainder + res; // Prepend the remainder to the binary string
+                    decimalNumber /= 2; // Divide the number by 2
+                }
+
+                return res;
             }
             catch (Exception)
             {
@@ -132,8 +251,25 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return 0; // Placeholder
+                // Handle edge case for empty array
+                if (nums.Length == 0)
+                {
+                    throw new ArgumentException("Array cannot be empty.");
+                }
+
+                // Initialize min with the first element
+                int min = nums[0];
+
+                // Iterate through the array to find the minimum
+                for (int i = 1; i < nums.Length; i++)
+                {
+                    if (nums[i] < min)
+                    {
+                        min = nums[i];
+                    }
+                }
+
+                return min;
             }
             catch (Exception)
             {
@@ -146,8 +282,24 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return false; // Placeholder
+                // Negative numbers and numbers ending with 0 (except 0 itself) are not palindromes
+                if (x < 0 || (x % 10 == 0 && x != 0))
+                    return false;
+
+                int revHalf = 0;
+
+                // Reverse the last half of the number
+                while (x > revHalf)
+                {
+                    int digit = x % 10; // Get the last digit
+                    revHalf = revHalf * 10 + digit; // Build the reversed half
+                    x /= 10; // Remove the last digit from x
+                }
+
+                // Compare the two halves
+                // For even-length numbers, x should be equal to reversedHalf
+                // For odd-length numbers, x should be equal to reversedHalf / 10 (to remove the middle digit)
+                return x == revHalf || x == revHalf / 10;
             }
             catch (Exception)
             {
@@ -160,8 +312,24 @@ namespace Assignment_2
         {
             try
             {
-                // Write your code here
-                return 0; // Placeholder
+                // Handle base cases
+                if (n == 0) return 0;
+                if (n == 1) return 1;
+
+                
+                int a = 0; 
+                int b = 1; 
+                int next = 0; 
+
+                // Calculate Fibonacci iteratively
+                for (int i = 2; i <= n; i++)
+                {
+                    next = a + b; 
+                    a = b; 
+                    b = next; 
+                }
+
+                return next; // Return F(n)
             }
             catch (Exception)
             {
